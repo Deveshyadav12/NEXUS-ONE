@@ -1,16 +1,12 @@
-from pydantic_settings import BaseSettings
+from passlib.context import CryptContext
 
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto"
+)
 
-class Settings(BaseSettings):
-    APP_NAME: str
-    MONGODB_URI: str
-    DATABASE_NAME: str
-    JWT_SECRET: str
-    JWT_ALGORITHM: str
-    OPENAI_API_KEY: str = ""
+def hash_password(password: str):
+    return pwd_context.hash(password)
 
-    class Config:
-        env_file = ".env"
-
-
-settings = Settings()
+def verify_password(password, hashed):
+    return pwd_context.verify(password, hashed)
